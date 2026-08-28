@@ -1,5 +1,5 @@
 from flask import Flask, Response, request
-from .ollama import get_response_stream
+from .agent import get_response_stream
 
 
 def server():
