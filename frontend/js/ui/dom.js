@@ -51,10 +51,10 @@ export async function StreamAgentMessage(stream, messageId){
             $current_div = $messageEl.find(`div[data-state-id=${stateId}]`);
         }
         markdown += message;
-        console.log(state);
         const toPrint = state==='content'?marked.parse(markdown):markdown;
 
         $current_div.html(toPrint);
         $chatHistory.scrollTop($chatHistory[0].scrollHeight);
     }
+    return markdown;
 }
