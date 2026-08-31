@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import subprocess
+from datetime import datetime
 
 import requests
 from dotenv import load_dotenv
@@ -15,6 +16,17 @@ def get_safe_path(relative_path: str) -> Path:
         raise ValueError("Access outside workspace is forbidden.")
 
     return path
+
+def get_time():
+    """Get the current time of the computer.
+    
+        Args:
+            
+
+        Returns:
+            The current time of the computer."""
+    current_time = datetime.now().strftime("%H:%M")
+    return str(current_time)
 
 def launch_steam():
     """Launches the steam program"""
@@ -81,12 +93,14 @@ def web_search(query: str) -> str:
 available_functions = [
     get_temperature,
     launch_steam,
-    web_search
+    web_search,
+    get_time
 ]
 
 function_registry = {
     'get_temperature': get_temperature,
     'launch_steam': launch_steam,
-    'web_search': web_search
+    'web_search': web_search,
+    'get_time': get_time
 }
 
