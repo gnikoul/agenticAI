@@ -153,6 +153,7 @@ def transcribe_and_send():
 
 def send_to_agent(text):
     print("🤖 Waiting for agent...", end='')
+    start = time.perf_counter()
     first_queue = True
 
     global ollama_response
