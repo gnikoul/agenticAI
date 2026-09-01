@@ -5,14 +5,20 @@ from .tools import available_functions, function_registry
 import json
 from dotenv import load_dotenv
 load_dotenv()
+user_name = os.getenv("USER_NAME")
+agent_name = os.getenv("AGENT_NAME")
+history_on = os.getenv("HISTORY_ON") == 'True'
+
+chat_hitory = []
 
 def get_response_stream(user_message):
-    user_name = os.getenv("USER_NAME")
-    agent_name = os.getenv("AGENT_NAME")
-    messages = [{'role': 'system','content': f'Your name is {agent_name}. You are my AI assistant. My name is {user_name}.'},
-            {'role': 'user', 'content': user_message+'/no_think'}
-        ]
+    if not history_on:
+        chat_hitory = []
+    chat_hitory.append({'role': 'user', 'content': user_message+'/no_think'})
+    prepend_messages = [{'role': 'system','content': f'Your name is {agent_name}. You are my AI assistant. My name is {user_name}.'}]
+    messages = prepend_messages + chat_hitory
     
+    assistant_answer_accumulator = ''
     while True:
         stream = chat(
             # model='qwen3:8b',
@@ -45,8 +51,8 @@ def get_response_stream(user_message):
                     # yield json.dumps({"message": "\n","state": "content"})
                 content += chunk.message.content
                 print(chunk.message.content, end='', flush=True)
+                assistant_answer_accumulator += chunk.message.content
                 yield json.dumps({"message": chunk.message.content,"state": "content"})
-                
             if chunk.message.tool_calls:
                 tool_calls.extend(chunk.message.tool_calls)
                 print(chunk.message.tool_calls)
@@ -56,6 +62,9 @@ def get_response_stream(user_message):
         # append accumulated fields to the messages
         if thinking or content or tool_calls:
             messages.append({'role': 'assistant', 'thinking': thinking, 'content': content, 'tool_calls': tool_calls})
+        
+        chat_hitory.append({'role': 'assistant', 'content': assistant_answer_accumulator})
+        
 
         if not tool_calls:
             break
