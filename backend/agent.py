@@ -1,4 +1,5 @@
 import os
+import time
 from ollama import chat 
 from .tools import available_functions, function_registry
 import json
@@ -11,7 +12,7 @@ def get_response_stream(user_message):
     messages = [{'role': 'system','content': f'Your name is {agent_name}. You are my AI assistant. My name is {user_name}.'},
             {'role': 'user', 'content': user_message+'/no_think'}
         ]
-
+    
     while True:
         stream = chat(
             # model='qwen3:8b',

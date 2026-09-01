@@ -34,8 +34,8 @@ if sys.platform == "win32":
 from faster_whisper import WhisperModel
 
 
-BACKEND_URL = "http://localhost:5000"
-KOKORO_URL = "http://localhost:8880"
+BACKEND_URL = "http://127.0.0.1:5000"
+KOKORO_URL = "http://127.0.0.1:8880"
 
 SAMPLE_RATE = 16000
 CHANNELS = 1
@@ -154,10 +154,8 @@ def transcribe_and_send():
 def send_to_agent(text):
     print("🤖 Waiting for agent...", end='')
     first_queue = True
-    start = time.perf_counter()
 
     global ollama_response
-
     ollama_response = requests.post(
         f"{BACKEND_URL}/agent/send_message",
         data={"message": text},
