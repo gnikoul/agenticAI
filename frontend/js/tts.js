@@ -1,5 +1,5 @@
 export async function speak(text, speachVoice = 'af_heart') {
-    const response = await fetch("http://localhost:8880/v1/audio/speech", {
+    const response = await fetch("http://127.0.0.1:8880/v1/audio/speech", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
