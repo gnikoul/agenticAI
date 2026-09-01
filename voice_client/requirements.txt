@@ -8,6 +8,7 @@ requests
 pyaudio
 pyautogui
 pillow
+opencv-python
 
 nvidia-cublas-cu12==12.9.2.10
 nvidia-cuda-nvrtc-cu12==12.9.86

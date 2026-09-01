@@ -14,10 +14,15 @@ def server():
     def agent_send_message():
         message = request.form["message"]
         image_file = request.files.get("image")
+        photo_file = request.files.get("photo")
         image = None
+        photo = None
         if image_file:
             image = image_file.read()
-        ollama_response = get_response_stream(message, image)
+        if photo_file:
+            print(photo_file)
+            photo = photo_file.read()
+        ollama_response = get_response_stream(message, [image, photo])
         stop = time.perf_counter()
         return Response(
             ollama_response,

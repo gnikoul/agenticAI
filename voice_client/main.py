@@ -11,7 +11,7 @@ from tts_client import speak, stop_speaking, tts_queue, tts_worker
 from voice_recorder import start_recording, stop_recording, is_recording, get_audio_data
 from agent_client import send_to_agent_and_put_to_tts_queue, get_ollama_response
 from screen_shooter import take_screenshot, screen_shooter_is_on, screen_shooter_stop, screen_shooter_start, screen_shooter_toggle
-
+from camera_shooter import take_camera_photo, camera_is_on, camera_stop, camera_start, camera_toggle
 
 def transcribe_and_send():
     start = time.perf_counter()
@@ -72,27 +72,37 @@ def on_press(key):
         interrupt_speaking()
         start_recording()
 
-
+esc_release_last_time_stamp = -99
 def on_release(key):
+    global esc_release_last_time_stamp
     if key == keyboard.Key.f2:
         if is_recording():
             executor = ThreadPoolExecutor(max_workers=1)
             future = executor.submit(stop_recording)
             future.add_done_callback(lambda future: transcribe_and_send())
-            
     elif key == keyboard.Key.f3:
         screen_shooter_toggle()
         if screen_shooter_is_on():
-            speak('Screen capture: on!')
+            threading.Thread(target=speak,args=('Screen capture: on!',)).start()
+            # speak('Screen capture: on!')
         else:
-            speak('Screen capture: off!')
-            
-
+            threading.Thread(target=speak,args=('Screen capture: off!',)).start()
+            # speak('Screen capture: off!')
+    elif key == keyboard.Key.f4:
+        camera_toggle()
+        if camera_is_on():
+            threading.Thread(target=speak,args=('Camera: on!',)).start()
+            # speak('Camera: on!')
+        else:
+            threading.Thread(target=speak,args=('Camera: off!',)).start()
+            # speak('Camera: off!')
     elif key == keyboard.Key.esc:
-        
-        stop_speaking.set()
-        print("\nShutting down...")
-        return False
+        current_time = time.time()
+        interrupt_speaking()
+        if current_time - esc_release_last_time_stamp <= 1:
+            print("\nShutting down...")
+            return False
+        esc_release_last_time_stamp = current_time
 
 
 with keyboard.Listener(

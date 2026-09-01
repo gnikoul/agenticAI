@@ -11,14 +11,18 @@ history_on = os.getenv("HISTORY_ON") == 'True'
 
 chat_hitory = []
 
-def get_response_stream(user_message, image_base64):
+def get_response_stream(user_message, images_base64: list):
     if not history_on:
         chat_hitory = []
     current_message = {'role': 'user', 'content': user_message+'/no_think'}
-    if image_base64:
-        current_message['images'] = [image_base64]
+    imgs = []
+    for img in images_base64:
+        if img:
+            imgs.append(img)
+    if imgs:
+        current_message['images'] = imgs
     chat_hitory.append(current_message)
-    prepend_messages = [{'role': 'system','content': f'Your name is {agent_name}. You are my AI assistant. My name is {user_name}.'}]
+    prepend_messages = [{'role': 'system','content': f'Your name is {agent_name}. You are my AI assistant installed on my computer. My name is {user_name}. In my messages I might include screenshots from my monitor or photos of my camera.'}]
     messages = prepend_messages + chat_hitory
     
     assistant_answer_accumulator = ''

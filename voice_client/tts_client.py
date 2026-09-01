@@ -11,6 +11,9 @@ stop_speaking = threading.Event()
 tts_queue = Queue()
 
 def speak(text):
+    speak_queue(text, force_speak = True)
+    
+def speak_queue(text, force_speak = False):
     print("🔊 Speaking...")
 
 
@@ -39,7 +42,7 @@ def speak(text):
 
     try:
         for chunk in response.iter_content(chunk_size=4096):
-            if stop_speaking.is_set():
+            if stop_speaking.is_set() and not force_speak:
                 break
 
             if chunk:
@@ -58,12 +61,12 @@ def speak(text):
 def tts_worker():
     while True:
         text = tts_queue.get()
-
-        if text is None:
+        
+        if not text:
             break
 
         stop_speaking.clear()
-        speak(text)
+        speak_queue(text)
 
         tts_queue.task_done()
         

@@ -4,6 +4,7 @@ import json
 import requests
 
 from screen_shooter import screen_shooter_is_on, take_screenshot
+from camera_shooter import camera_is_on, take_camera_photo
 
 BACKEND_URL = "http://127.0.0.1:5000"
 ollama_response = None
@@ -16,15 +17,19 @@ def send_to_agent_and_put_to_tts_queue(text, tts_queue):
     first_queue = True
     
     screenshot = None
+    photo = None
     if screen_shooter_is_on():
         screenshot = take_screenshot()
+    if camera_is_on():
+        photo = take_camera_photo()
 
     global ollama_response
     ollama_response = requests.post(
         f"{BACKEND_URL}/agent/send_message",
         data={"message": text},
         files={
-            "image": ("screenshot.webp", screenshot, "image/webp")
+            "image": ("screenshot.webp", screenshot, "image/webp"),
+            "photo": ("screenshot.webp", photo, "image/webp")
         },
         stream=True
         )
