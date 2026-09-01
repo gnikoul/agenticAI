@@ -12,12 +12,13 @@ def server():
     
     @app.route("/agent/send_message", methods=['POST'])
     def agent_send_message():
-        start = time.perf_counter()
-        print('in agent endpoint now', start)
         message = request.form["message"]
-        ollama_response = get_response_stream(message)
+        image_file = request.files.get("image")
+        image = None
+        if image_file:
+            image = image_file.read()
+        ollama_response = get_response_stream(message, image)
         stop = time.perf_counter()
-        print(f'returning from agent endpoint now {stop-start}')
         return Response(
             ollama_response,
             mimetype="application/x-ndjson"

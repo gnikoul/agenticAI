@@ -6,6 +6,8 @@ soundfile
 pynput
 requests
 pyaudio
+pyautogui
+pillow
 
 nvidia-cublas-cu12==12.9.2.10
 nvidia-cuda-nvrtc-cu12==12.9.86

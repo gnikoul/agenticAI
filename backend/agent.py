@@ -11,22 +11,21 @@ history_on = os.getenv("HISTORY_ON") == 'True'
 
 chat_hitory = []
 
-def get_response_stream(user_message):
+def get_response_stream(user_message, image_base64):
     if not history_on:
         chat_hitory = []
-    chat_hitory.append({'role': 'user', 'content': user_message+'/no_think'})
+    current_message = {'role': 'user', 'content': user_message+'/no_think'}
+    if image_base64:
+        current_message['images'] = [image_base64]
+    chat_hitory.append(current_message)
     prepend_messages = [{'role': 'system','content': f'Your name is {agent_name}. You are my AI assistant. My name is {user_name}.'}]
     messages = prepend_messages + chat_hitory
     
     assistant_answer_accumulator = ''
     while True:
         stream = chat(
-            # model='qwen3:8b',
-            # model='qwen3:4b',
-            model='qwen3:1.7b',
-            # model='qwen3:0.6b',
-            # model='gemma4:e2b',
-            # model='granite3.1-moe:3b',
+            # model='qwen3:1.7b',
+            model='gemma4:e2b',
             messages=messages,
             tools=available_functions,
             stream=True,
